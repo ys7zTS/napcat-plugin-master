@@ -1,4 +1,4 @@
-import { Master } from 'src'
+import { Master } from './index'
 import { createPlugin } from './plugin'
 import { sendMsg } from './utils'
 
