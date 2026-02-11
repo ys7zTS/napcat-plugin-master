@@ -1,7 +1,7 @@
 {
   "name": "napcat-plugin-master",
   "plugin": "主人列表插件",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "type": "module",
   "main": "index.mjs",
   "description": "NapCat 插件标准主人列表",
