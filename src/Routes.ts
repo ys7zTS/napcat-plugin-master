@@ -4,10 +4,27 @@ import { Masters } from './master'
 export function registerRoutes (ctx: NapCatPluginContext, Master: Masters) {
   const router = ctx.router
   // 注册主人管理相关的 API
-  router.get('/masters', (req, res) => {
+  router.get('/masters', async (req, res) => {
+    const list = Master.get
+    const data = await Promise.all(list.map(async (userId) => {
+      try {
+        const info = await ctx.actions.call('get_stranger_info', { user_id: Number(userId) }, ctx.adapterName, ctx.pluginManager.config)
+        return {
+          userId,
+          nickname: info?.nickname || '未知用户',
+          avatar: `https://q1.qlogo.cn/g?b=qq&nk=${userId}&s=100`
+        }
+      } catch (e) {
+        return {
+          userId,
+          nickname: '未知用户',
+          avatar: `https://q1.qlogo.cn/g?b=qq&nk=${userId}&s=100`
+        }
+      }
+    }))
     res.json({
       code: 0,
-      data: Master.get
+      data
     })
   })
   router.post('/masters/add', (req, res) => {

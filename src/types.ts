@@ -11,3 +11,14 @@ export interface ApiResponse<T = unknown> {
   /** 响应数据（仅成功时返回） */
   data?: T
 }
+
+// ==================== 数据模型 ====================
+
+/**
+ * 主人详细信息
+ */
+export interface MasterInfo {
+  userId: string
+  nickname: string
+  avatar: string
+}

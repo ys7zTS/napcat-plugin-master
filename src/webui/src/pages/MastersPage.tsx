@@ -2,9 +2,10 @@ import { useState, useEffect, useCallback } from 'react'
 import { authFetch } from '../utils/api'
 import { showToast } from '../hooks/useToast'
 import { IconRefresh, IconX } from '../components/icons'
+import type { MasterInfo } from '../types'
 
 export default function MastersPage () {
-  const [masters, setMasters] = useState<string[]>([])
+  const [masters, setMasters] = useState<MasterInfo[]>([])
   const [loading, setLoading] = useState(true)
   const [newUserId, setNewUserId] = useState('')
   const [isAdding, setIsAdding] = useState(false)
@@ -12,7 +13,7 @@ export default function MastersPage () {
   const fetchMasters = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await authFetch<string[]>('/masters')
+      const res = await authFetch<MasterInfo[]>('/masters')
       if (res.code === 0 && res.data) {
         setMasters(res.data)
       }
@@ -128,16 +129,26 @@ export default function MastersPage () {
         </div>
       </div>
 
-      <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4'>
+      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
         {masters.map((master) => (
           <div
-            key={master}
-            className='flex items-center justify-between bg-gray-50 dark:bg-white/[0.03] border border-gray-100 dark:border-white/[0.05] rounded-xl px-3 py-1.5 hover:shadow-sm transition-all group'
+            key={master.userId}
+            className='flex items-center gap-3 p-3 bg-gray-50 dark:bg-white/[0.03] border border-gray-100 dark:border-white/[0.05] rounded-xl hover:shadow-md transition-all group relative'
           >
-            <span className='text-gray-700 dark:text-gray-200 font-mono text-sm'>{master}</span>
+            <img
+              src={master.avatar}
+              alt='avatar'
+              className='w-10 h-10 rounded-full border border-gray-100 dark:border-gray-800'
+            />
+            <div className='flex flex-col min-w-0'>
+              <span className='text-sm font-semibold text-gray-700 dark:text-gray-100 truncate' title={master.nickname}>
+                {master.nickname}
+              </span>
+              <span className='text-xs text-gray-500 font-mono'>{master.userId}</span>
+            </div>
             <button
-              onClick={() => handleRemove(master)}
-              className='w-5 h-5 flex items-center justify-center bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow-sm'
+              onClick={() => handleRemove(master.userId)}
+              className='absolute -top-1.5 -right-1.5 w-5 h-5 flex items-center justify-center bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow-sm z-10'
               title='删除主人'
             >
               <IconX size={12} />
@@ -155,7 +166,7 @@ export default function MastersPage () {
       <div className='mt-8 pt-6 border-t border-gray-100 dark:border-gray-800'>
         <div className='bg-brand-50/50 dark:bg-brand-900/5 p-4 rounded-xl'>
           <p className='text-xs text-brand-600/70 dark:text-brand-400/50 leading-relaxed font-medium'>
-            * 主人拥有插件的最高权限，请谨慎添加。修改实时生效，无需重启插件。
+            * 主人拥有插件的最高权限，请谨慎添加。修改实时生效，无需重启插件(前提是插件使用该插件的权限判断)。
           </p>
         </div>
       </div>

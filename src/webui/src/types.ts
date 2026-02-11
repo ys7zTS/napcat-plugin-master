@@ -5,3 +5,9 @@ export interface ApiResponse<T = unknown> {
   data?: T
   message?: string
 }
+
+export interface MasterInfo {
+  userId: string
+  nickname: string
+  avatar: string
+}
