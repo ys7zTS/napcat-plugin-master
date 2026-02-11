@@ -1,17 +1,16 @@
 {
-  "name": "napcat-plugin-template",
-  "plugin": "插件模板",
+  "name": "napcat-plugin-master",
+  "plugin": "主人列表插件",
   "version": "1.0.0",
   "type": "module",
   "main": "index.mjs",
-  "description": "NapCat 插件开发模板 - 快速开始你的插件开发",
-  "author": "Your Name",
+  "description": "NapCat 插件标准主人列表",
+  "author": "瑜笙",
   "license": "MIT",
   "keywords": [
     "napcat",
     "plugin",
-    "qq",
-    "template"
+    "qq"
   ],
   "napcat": {
     "tags": [
@@ -24,12 +23,13 @@
     "napcat-types": "0.0.16"
   },
   "devDependencies": {
-    "@rollup/plugin-node-resolve": "^15.3.1",
+    "@rollup/plugin-node-resolve": "^16.0.3",
     "@types/express": "^5.0.6",
-    "@types/node": "^20.19.33",
-    "napcat-plugin-debug-cli": "^1.2.6",
+    "@types/node": "^25.2.3",
+    "napcat-plugin-debug-cli": "^1.2.8",
+    "neostandard": "^0.12.2",
     "typescript": "^5.9.3",
-    "vite": "^6.4.1",
+    "vite": "^7.3.1",
     "ws": "^8.19.0"
   },
   "scripts": {
