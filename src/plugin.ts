@@ -1,6 +1,7 @@
 import { OB11Message } from 'napcat-types'
 import { NapCatPluginContext } from 'napcat-types/napcat-onebot/network/plugin/types'
 import { isMaster } from './index'
+import { sendMsg } from './utils'
 
 interface PluginType {
   /** 插件正则 */
@@ -43,11 +44,7 @@ export class PluginManager {
 
   async loadPlugins () {
     const plugins = await import('./func')
-    this.#plugins = Object.values(plugins).filter(
-      (v): v is PluginType => v && typeof v === 'object' &&
-        v.reg instanceof RegExp &&
-        typeof v.handler === 'function'
-    )
+    this.#plugins = Object.values(plugins).filter((i) => (typeof i === 'string' || i.reg instanceof RegExp) && typeof i.handler === 'function')
     this.#plugins.sort((a, b) => (a.priority ?? 100) - (b.priority ?? 100))
   }
 
@@ -57,10 +54,12 @@ export class PluginManager {
     for (const plugin of this.#plugins) {
       if (plugin.reg.test(event.raw_message)) {
         if (plugin.permission === 'master' && !isMaster(event.user_id.toString())) {
+          await sendMsg(ctx, event, '(╥﹏╥) 权限不足，只有主人才能使用此功能')
           continue
         }
 
         try {
+          ctx.logger.info(`[${plugin.name || ''}] 开始处理...`)
           const result = await plugin.handler(event, ctx)
           if (result === true || result === undefined) {
             return true

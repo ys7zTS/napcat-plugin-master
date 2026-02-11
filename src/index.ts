@@ -28,22 +28,27 @@ import { EventType } from 'napcat-types/napcat-onebot/event/index'
 import { Masters } from './master'
 import { registerRoutes } from './Routes'
 import { PluginManager } from './plugin'
-import { PluginManagerInstance, setPluginManagerInstance } from './utils'
 
-export let isMaster = (userId: string): boolean => { throw new Error('未初始化') }
-export let getMasterList = (): string[] => { throw new Error('未初始化') }
+/**
+ * 是否是主人
+ * @param userId 用户 ID
+ */
+export let isMaster = (_userId: string): boolean => { throw new Error('未初始化') }
+/** 获取主人列表 */
+export let getMasterList: string[] = []
+export let Master: Masters | null = null
+let Plugin
 
 /** 函数主方法 */
 // eslint-disable-next-line camelcase
 export const plugin_init: PluginModule['plugin_init'] = async (ctx) => {
   try {
     ctx.logger.info('(｡･ω･｡) 插件初始化中...')
-    const Master = new Masters(ctx)
-    isMaster = (userId: string) => Master.isMaster(userId)
-    getMasterList = () => Master.get
-    const pm = new PluginManager()
-    await pm.loadPlugins()
-    setPluginManagerInstance(pm)
+    Master = new Masters(ctx)
+    isMaster = (userId: string) => Master!.isMaster(userId)
+    getMasterList = Master!.get
+    Plugin = new PluginManager()
+    await Plugin.loadPlugins()
 
     registerWebUI(ctx)
     registerRoutes(ctx, Master)
@@ -64,7 +69,7 @@ export const plugin_onmessage: PluginModule['plugin_onmessage'] = async (ctx, ev
   if (event.post_type !== EventType.MESSAGE) return
 
   // 委托给插件管理器
-  await PluginManagerInstance.onMessage(ctx, event)
+  await Plugin!.onMessage(ctx, event)
 }
 
 // ==================== 内部函数 ====================
